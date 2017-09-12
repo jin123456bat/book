@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />     
+<meta name="apple-mobile-web-app-capable" content="yes" />    
+<meta name="format-detection" content="telephone=no" />    
+<title>太客书架</title>
+</head>
+<style>
+body{
+	background-color:#C7EDCC;
+}
+header{
+	font-size:15px;
+	color:#000000;
+	font-weight:bold;
+	text-align:center;
+	padding: 10px 0px;
+    line-height: 30px;
+}
+.nav{
+	display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: stretch;
+	height:50px;
+}
+.nav div {
+	line-height: 50px;
+	order:1;
+	flex:0 1 auto;
+	width:25%;
+	text-align:center;
+	
+	background-color: rgb(204, 226, 191);
+    color: green;
+    border: 1px solid rgb(187, 214, 170)
+}
+</style>
+<body>
+	<header>
+		<div>书籍标题</div>
+		<div>文章标题</div>
+	</header>
+	<div class="container">
+		<div class="nav">
+			<div>上一章</div>
+			<div>首页</div>
+			<div>目录</div>
+			<div>下一章</div>
+		</div>
+		<div class="content">
+		</div>
+		<div class="nav">
+			<div>上一章</div>
+			<div>首页</div>
+			<div>目录</div>
+			<div>下一章</div>
+		</div>
+	</div>
+	
+</body>
+</html>

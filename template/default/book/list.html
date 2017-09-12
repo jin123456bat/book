@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+<title>书籍列表</title>
+</head>
+<style>
+body{
+	display:flex;
+	flex-direction:column;
+}
+.book{
+	display:flex;
+	flex-direction:row;
+	padding:5px;
+}
+.detail{
+	padding-left: 10px;
+}
+</style>
+<body>
+	{%section from=$book value=item%}
+	<div class="book">
+		<div class="image">
+			<image width="80px" height="100px" src="{%$item.image%}">
+		</div>
+		<div class="detail">
+			<div class="title">{%$item.name%}</div>
+			<div class="author">{%$item.author%}</div>
+			<div class="status">{%$item.completed==1?'完结':'连载'%}</div>
+			<div class="description">{%$item.description%}</div>
+		</div>
+	</div>
+	{%/section%}
+</body>
+</html>
