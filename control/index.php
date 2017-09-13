@@ -3,6 +3,10 @@ namespace book\control;
 
 use framework\core\webControl;
 use framework\core\view;
+use framework\core\request;
+use framework\core\response\json;
+use framework\vendor\paginate;
+use framework\core\response\url;
 
 class index extends webControl
 {
@@ -25,7 +29,37 @@ class index extends webControl
 	 */
 	function article()
 	{
-		
+		$book_id = request::get('id',0,NULL,'i');
+		$start = request::post('start',0,NULL,'i');
+		$length = 20;
+		$book = $this->model('book')->where('id=?',array($book_id))->find();
+		if (!empty($book))
+		{
+			$model = $this->model('article')
+			->where('book_id=? and completed=?',array($book_id,1))
+			->order('createtime','desc')
+			->order('id','desc')
+			->select(array(
+				'id',
+				'title',
+			));
+			
+			$page = new paginate($model);
+			$page->limit($start, $length);
+			if (request::isAjax() && request::method()=='post')
+			{
+				return new json(1,'ok',$page->fetch());
+			}
+			else
+			{
+				$view = new view('book/article.html');
+				$view->assign('book', $book);
+				$view->assign('pagesize', $page->pagesize($length));
+				$view->assign('article', $page->fetch());
+				return $view;
+			}
+		}
+		return '书籍不存在';
 	}
 	
 	/**
@@ -33,7 +67,16 @@ class index extends webControl
 	 */
 	function content()
 	{
+		$id = request::get('id',0,null,'i');
+		$article = $this->model('article')->where('id=?',array($id))->find();
 		
+		$article['prev_id'] = $this->model('article')->where('id<? and book_id=?',array($id,$article['book_id']))->order('createtime','desc')->order('id','desc')->scalar('id');
+		$article['next_id'] = $this->model('article')->where('id>? and book_id=?',array($id,$article['book_id']))->order('createtime','asc')->order('id','asc')->scalar('id');
+		$article['content'] = trim($article['content']);
+		
+		$view = new view('book/content.html');
+		$view->assign('article', $article);
+		return $view;
 	}
 	
 	function index()

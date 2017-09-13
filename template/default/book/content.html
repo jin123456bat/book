@@ -26,38 +26,75 @@ header{
     justify-content: center;
     align-items: stretch;
 	height:50px;
+	
 }
 .nav div {
 	line-height: 50px;
 	order:1;
 	flex:0 1 auto;
-	width:25%;
+	width:33.333333%;
 	text-align:center;
 	
 	background-color: rgb(204, 226, 191);
     color: green;
-    border: 1px solid rgb(187, 214, 170)
+    border: 1px solid rgb(187, 214, 170);
+	
+}
+.nav a{
+	text-decoration: none;
+	color:green;
+}
+.content{
+	display: block;
+    font-family: monospace;
+    white-space: pre-line;
+    margin: 1em 0px;
+	width:100%;
+	word-wrap:break-word;
 }
 </style>
 <body>
 	<header>
 		<div>书籍标题</div>
-		<div>文章标题</div>
+		<div>{%$article.title%}</div>
 	</header>
 	<div class="container">
 		<div class="nav">
-			<div>上一章</div>
-			<div>首页</div>
-			<div>目录</div>
-			<div>下一章</div>
+			<div><a href="
+			{%if empty($article.prev_id)%}
+				{%\framework\core\http::url('index','article',[id=>$article.book_id])%}
+			{%else%}
+				{%\framework\core\http::url('index','content',[id=>$article.prev_id])%}
+			{%/if%}
+			">上一章</a></div>
+			<div><a href="{%\framework\core\http::url('index','article',[id=>$article.book_id])%}">目录</a></div>
+			<div><a href="
+			{%if empty($article.next_id)%}
+				{%\framework\core\http::url('index','article',[id=>$article.book_id])%}
+			{%else%}
+				{%\framework\core\http::url('index','content',[id=>$article.next_id])%}
+			{%/if%}
+			">下一章</a></div>
 		</div>
 		<div class="content">
+			{%trim($article.content)%}
 		</div>
 		<div class="nav">
-			<div>上一章</div>
-			<div>首页</div>
-			<div>目录</div>
-			<div>下一章</div>
+			<div><a href="
+			{%if empty($article.prev_id)%}
+				{%\framework\core\http::url('index','article',[id=>$article.book_id])%}
+			{%else%}
+				{%\framework\core\http::url('index','content',[id=>$article.prev_id])%}
+			{%/if%}
+			">上一章</a></div>
+			<div><a href="{%\framework\core\http::url('index','article',[id=>$article.book_id])%}">目录</a></div>
+			<div><a href="
+			{%if empty($article.next_id)%}
+				{%\framework\core\http::url('index','article',[id=>$article.book_id])%}
+			{%else%}
+				{%\framework\core\http::url('index','content',[id=>$article.next_id])%}
+			{%/if%}
+			">下一章</a></div>
 		</div>
 	</div>
 	

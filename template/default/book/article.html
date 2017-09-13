@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+<title>{%$book.name%}</title>
+</head>
+<style>
+body{
+	margin:0px;
+	padding:0px;
+}
+.title{
+	line-height: 40px;
+    background-color: #0080C0;
+    padding-left: 10px;
+    color: #fff;
+}
+.article{
+	padding-left:10px;
+	height:25px;
+}
+a{
+	line-height:25px;
+	text-decoration: none;
+	color: #666;
+	font-size: 13px;
+}
+.nav{
+	display:flex;
+	flex-direction:row;
+	justify-content:space-around;
+	align-items:stretch;
+}
+.nav div{
+	border: 1px solid #ccc;
+    background-color: #fff;
+	flex:auto;
+	margin:0px 5px;
+	text-align:center;
+	font-size:13px;
+	border-radius: 4px;
+	color: #666;
+}
+.nav input{
+	border:none;
+	outline:none;
+}
+</style>
+<body>
+	<div class="title">
+		全部章节
+	</div>
+	<div class="content">
+		{%section from=$article value=item%}
+		<div class="article"><a href="{%\framework\core\http::url('index','content',[id=>$item.id])%}">{%$item.title%}</a></div>
+		{%/section%}
+	</div>
+	<div class="nav" data-start="{%$start%}">
+		<div onClick="javascript:load(1)">首页</div>
+		<div onClick="javascript:load(parseInt($('input').val())-1)">上页</div>
+		<div><input type="number" value="1" onChange="javascript:load(parseInt($(this).val()))"></div>
+		<div onClick="javascript:load(parseInt($('input').val())+1)">下页</div>
+		<div onClick="javascript:load({%$pagesize%})">尾页</div>
+	</div>
+	<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script type="text/javascript">
+  	function load(page)
+  	{
+  		page = page>{%$pagesize%}?{%$pagesize%}:page;
+  		page = page<1?1:page;
+  		$('input').val(page);
+  		start = (page-1)*20;
+  		$.post('{%\framework\core\http::url("index","article",[id=>$_GET.id])%}',{start:start},function(response){
+  			if(response.code==1)
+			{
+				$('.content').empty();
+				$.each(response.data,function(index,value){
+					$('.content').append('<div class="article"><a href="{%\framework\core\http::url('index','content')%}&id='+value.id+'">'+value.title+'</a></div>');
+				});
+			}
+  		});
+  	}
+  </script>
+</body>
+</html>

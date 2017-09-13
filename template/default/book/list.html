@@ -23,6 +23,7 @@ body{
 </style>
 <body>
 	{%section from=$book value=item%}
+	<a href="{%\framework\core\http::url('index','article',[id=>$item.id])%}">
 	<div class="book">
 		<div class="image">
 			<image width="80px" height="100px" src="{%$item.image%}">
@@ -34,6 +35,7 @@ body{
 			<div class="description">{%$item.description%}</div>
 		</div>
 	</div>
+	</a>
 	{%/section%}
 </body>
 </html>
