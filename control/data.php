@@ -99,7 +99,16 @@ class data extends control
 			}
 		}
 	}
-	 
+	
+	/**
+	 * @return string[]
+	 */
+	function __single()
+	{
+		return array(
+			'download'
+		);
+	}
 	
 	/**
 	 * 文章下载
