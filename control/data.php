@@ -8,6 +8,11 @@ use framework\core\response\url;
 
 class data extends control
 {
+	function test()
+	{
+		sleep(10);
+	}
+	
 	/**
 	 * 添加书籍
 	 * 传递url过来
@@ -106,7 +111,8 @@ class data extends control
 	function __single()
 	{
 		return array(
-			'download'
+			'download',
+			'test'
 		);
 	}
 	
