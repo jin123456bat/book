@@ -1,11 +1,10 @@
 <?php 
 namespace book\control;
 use framework\core\Control;
-use framework\core\database\mysql\field;
 use framework\core\http;
-use framework\vendor\image;
 use book\entity\book;
 use framework\core\request;
+use framework\core\response\url;
 
 class data extends Control
 {
@@ -18,10 +17,12 @@ class data extends Control
 		$url = request::post('url');
 		$url = parse_url($url);
 		
+		$query = isset($url['query']) && !empty($url['query'])?$url['query']:'';
+		$path = isset($url['path']) && !empty($url['path'])?$url['path']:'';
 		//主机host
 		$host = $url['scheme'].'://'.$url['host'];
 		//目录url
-		$url = $host.$url['path'].$url['query'];
+		$url = $host.$path.$query;
 		
 		$data = array(
 			'url' => $url,
@@ -42,6 +43,8 @@ class data extends Control
 			));
 		}
 		$this->model('article')->commitCompress();
+		
+		return new \framework\core\response\message('添加成功',\framework\core\http::url('admin', 'index'));
 	}
 	
 	/**

@@ -17,10 +17,15 @@ class book extends entity
 			$this->_content = http::get($this->_data['url']);
 			$this->_content = str_replace('&nbsp;', '', $this->_content);
 			$this->_content = iconv('gbk', 'utf-8', $this->_content);
-		}
-		
-		if (!isset($this->_data['id']) || empty($this->_data['id']))
-		{
+			
+			//更新基础信息
+			$this->name = $this->getTitle();
+			$this->author = $this->getAuthor();
+			$this->description = $this->getDescription();
+			$this->completed = $this->getIsCompleted()?1:0;
+			$this->isdelete=0;
+			$this->download_completed = 0;
+			$this->image = $this->getImage();
 			$this->save();
 		}
 	}
@@ -45,6 +50,15 @@ class book extends entity
 	}
 	
 	/**
+	 * 获取书籍描述
+	 */
+	function getDescription()
+	{
+		preg_match('/<div id="intro">[\s]*<p>(?<description>[\s\S]*)<\/p>[\s]*<\/div>/im',$this->_content,$match);
+		return $match['description'];
+	}
+	
+	/**
 	 * 书籍是否完结
 	 * @return boolean
 	 */
@@ -65,7 +79,7 @@ class book extends entity
 		preg_match('/src=\'(?<image>[^\']+)\'/', $response,$image);
 		
 		$image = new image($image['image']);
-		return $image->move(APP_ROOT.'/upload/'.date('Y-m-d').'/')->rename(uniqid())->path(false);
+		return $image->move(APP_ROOT.'upload/'.date('Y-m-d').'/')->rename(uniqid())->path(false);
 	}
 	
 	/**
@@ -80,12 +94,11 @@ class book extends entity
 		foreach ($match['url'] as $index => $url)
 		{
 			$name = $match['name'][$index];
-			$temo[] = array(
+			$temp[] = array(
 				'url' => $this->_data['source'].$url,
 				'name' => $name
 			);
 		}
-		
 		return $temp;
 	}
 	
