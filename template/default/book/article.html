@@ -76,7 +76,7 @@ a{
   		page = page<1?1:page;
   		$('input').val(page);
   		start = (page-1)*20;
-  		$.post('{%\framework\core\http::url("index","article",[id=>$_GET.id])%}',{start:start},function(response){
+  		$.post('{%\framework\core\http::url('index','article',[id=>$_GET.id])%}',{start:start},function(response){
   			if(response.code==1)
 			{
 				$('.content').empty();

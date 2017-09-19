@@ -1,5 +1,7 @@
 <?php
-if ($_SERVER['HTTP_HOST'] == 'book.techer.top')
+use framework\core\request;
+
+if (request::php_sapi_name() == 'cli' || $_SERVER['HTTP_HOST'] == 'book.techer.top')
 {
 	return array(
 		'type' => 'mysql',

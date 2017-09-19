@@ -1,12 +1,12 @@
 <?php 
 namespace book\control;
-use framework\core\Control;
+use framework\core\control;
 use framework\core\http;
 use book\entity\book;
 use framework\core\request;
 use framework\core\response\url;
 
-class data extends Control
+class data extends control
 {
 	/**
 	 * 添加书籍
@@ -29,22 +29,46 @@ class data extends Control
 			'source' => $host,
 		);
 		$book = new book($data);
-		$list = $book->getArticleList();
 		
-		$this->model('article')->startCompress();
-		foreach ($list as $article)
+		//更新基础信息
+		$book->name = $book->getTitle();
+		$book->author = $book->getAuthor();
+		$book->description = $book->getDescription();
+		$book->completed = $book->getIsCompleted()?1:0;
+		$book->isdelete=0;
+		$book->download_completed = 0;
+		$book->image = $book->getImage();
+		if ($book->validate())
 		{
-			$this->model('article')->insert(array(
-				'book_id' => $book->id,
-				'content' => '',
-				'title' => $article['name'],
-				'url' => $article['url'],
-				'completed' => 0,
-			));
+			if($book->save())
+			{
+				$list = $book->getArticleList();
+				
+				$this->model('article')->startCompress();
+				foreach ($list as $article)
+				{
+					$this->model('article')->insert(array(
+						'book_id' => $book->id,
+						'content' => '',
+						'title' => $article['name'],
+						'url' => $article['url'],
+						'completed' => 0,
+					));
+				}
+				$this->model('article')->commitCompress();
+				return new \framework\core\response\message('添加成功',\framework\core\http::url('admin', 'index'));
+			}
+			else
+			{
+				return new \framework\core\response\message('添加失败',\framework\core\http::url('admin', 'index'));
+			}
 		}
-		$this->model('article')->commitCompress();
+		else
+		{
+			$error = $book->getError();
+			return new \framework\core\response\message($error['name'][0],\framework\core\http::url('admin', 'index'));
+		}
 		
-		return new \framework\core\response\message('添加成功',\framework\core\http::url('admin', 'index'));
 	}
 	
 	/**
@@ -82,7 +106,7 @@ class data extends Control
 	 */
 	function download()
 	{
-		$result = $this->model('article')->where('completed=?',array(0))->select();
+		$result = $this->model('article')->where('completed=?',array(0))->limit(100)->select();
 		foreach ($result as $r)
 		{
 			echo "正在下载:《".$r['title']."》从：".$r['url'];

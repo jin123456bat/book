@@ -17,17 +17,17 @@ class book extends entity
 			$this->_content = http::get($this->_data['url']);
 			$this->_content = str_replace('&nbsp;', '', $this->_content);
 			$this->_content = iconv('gbk', 'utf-8', $this->_content);
-			
-			//更新基础信息
-			$this->name = $this->getTitle();
-			$this->author = $this->getAuthor();
-			$this->description = $this->getDescription();
-			$this->completed = $this->getIsCompleted()?1:0;
-			$this->isdelete=0;
-			$this->download_completed = 0;
-			$this->image = $this->getImage();
-			$this->save();
 		}
+	}
+	
+	function __rules()
+	{
+		return array(
+			'unique' => array(
+				'fields' => 'name',
+				'message' => '书籍《{value}》已经存在'
+			)
+		);
 	}
 	
 	/**
