@@ -8,11 +8,6 @@ use framework\core\response\url;
 
 class data extends control
 {
-	function test()
-	{
-		sleep(10);
-	}
-	
 	/**
 	 * 添加书籍
 	 * 传递url过来
@@ -111,8 +106,7 @@ class data extends control
 	function __single()
 	{
 		return array(
-			'download',
-			'test'
+			'download'
 		);
 	}
 	
@@ -121,7 +115,7 @@ class data extends control
 	 */
 	function download()
 	{
-		$result = $this->model('article')->where('completed=?',array(0))->limit(100)->select();
+		$result = $this->model('article')->where('completed=?',array(0))->select();
 		foreach ($result as $r)
 		{
 			echo "正在下载:《".$r['title']."》从：".$r['url'];
