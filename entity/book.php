@@ -79,7 +79,7 @@ class book extends entity
 		preg_match('/src=\'(?<image>[^\']+)\'/', $response,$image);
 		
 		$image = new image($image['image']);
-		return $image->move(APP_ROOT.'upload/'.date('Y-m-d').'/')->rename(uniqid())->path(false);
+		return $image->move(APP_ROOT.'/upload/'.date('Y-m-d').'/')->rename(uniqid())->path(false);
 	}
 	
 	/**
