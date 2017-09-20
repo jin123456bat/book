@@ -11,6 +11,8 @@
 body{
 	display:flex;
 	flex-direction:column;
+	padding:0px;
+	margin:0px;
 }
 .book{
 	display:flex;
@@ -26,6 +28,8 @@ a{
 }
 </style>
 <body>
+	{%import file='common/header.html'%}
+	
 	{%section from=$book value=item%}
 	<a href="{%\framework\core\http::url('index','article',[id=>$item.id])%}">
 	<div class="book">

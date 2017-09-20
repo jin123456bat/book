@@ -74,8 +74,12 @@ class index extends webControl
 		$article['next_id'] = $this->model('article')->where('id>? and book_id=?',array($id,$article['book_id']))->order('createtime','asc')->order('id','asc')->scalar('id');
 		$article['content'] = trim($article['content']);
 		
+		$book = $this->model('book')->where('id=?',array($article['book_id']))->find();
+		
 		$view = new view('book/content.html');
 		$view->assign('article', $article);
+		$view->assign('book', $book);
+		
 		return $view;
 	}
 	

@@ -1,5 +1,12 @@
 <?php
-define('ROOT','/var/www');
+if ($_SERVER['HTTP_HOST'] == 'localhost')
+{
+	define('ROOT', '..');
+}
+else
+{
+	define('ROOT','/var/www');
+}
 // 调试模式
 define('DEBUG', false);
 

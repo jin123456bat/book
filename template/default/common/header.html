@@ -1,0 +1,23 @@
+<style>
+.header{
+	height:33px;
+	background-color:#0080C0;
+	padding: 6px;
+}
+.header .button{
+	background-color:#0094DB;
+	color: #fff;
+	border: 1px solid #006B9F;
+	display:inline-block;
+	padding:5px;
+	border-radius: 5px;
+	margin-left:10px;
+	text-decoration: none;
+}
+.header .button:last-child{
+	margin-right:10px;
+}
+</style>
+<div class="header">
+	<a class="button" href="{%\framework\core\http::url('user','login')%}">登录</a><a class="button">注册</a><a class="button" style="float: right;">书架</a>
+</div>

@@ -10,8 +10,10 @@
 <style>
 body{
 	background-color:#C7EDCC;
+	padding:0px;
+	margin:0px;
 }
-header{
+.title{
 	font-size:15px;
 	color:#000000;
 	font-weight:bold;
@@ -49,15 +51,17 @@ header{
     font-family: monospace;
     white-space: pre-line;
     margin: 1em 0px;
-	width:100%;
 	word-wrap:break-word;
+	font-size:16px;
+	padding:0px 10px;
 }
 </style>
 <body>
-	<header>
-		<div>书籍标题</div>
+	{%import file='common/header.html'%}
+	<div class="title">
+		<div>{%$book.name%}</div>
 		<div>{%$article.title%}</div>
-	</header>
+	</div>
 	<div class="container">
 		<div class="nav">
 			<div><a href="
