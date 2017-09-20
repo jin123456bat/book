@@ -9,28 +9,64 @@
 </head>
 <style>
 	.title{
-	display:inline-block;
+		display:inline-block;
+		width:25%;
 	}
 	.input{
-	display:inline-block;
+		display:inline-block;
+		width:70%;
+	}
+	.row{
+		display:block;
+		margin:0 auto;
+		width:75%;
+		margin-top:20px;
+	}
+	body{
+		margin:0px;
+		padding:0px;
+	}
+	.container{
+		padding-top: 15px;
+	}
+	.input input{
+		border:1px solid #B7F3F9;
+		height:30px;
+		outline:none;
+		width: 100%;
+	}
+	.submit{
+		background-color: #0080C0;
+	    border: none;
+	    color: white;
+	    width: 100%;
+	    height: 35px;
 	}
 </style>
 <body>
-	<div class="row">
-		<div class="title">
-		账号:
-		</div>
-		<div class="input">
-		<input type="text" name="name">
-		</div>
-	</div>
-	<div class="row">
-		<div class="title">
-		密码:
-		</div>
-		<div class="input">
-		<input type="password" name="password">
-		</div>
+	{%import file='common/header.html'%}
+	<div class="container">
+		<form method="post" action="">
+			<div class="row">
+				<div class="title">
+				账号:
+				</div>
+				<div class="input">
+				<input type="text" name="name">
+				</div>
+			</div>
+			<div class="row">
+				<div class="title">
+				密码:
+				</div>
+				<div class="input">
+				<input type="password" name="password">
+				</div>
+			</div>
+			<div class="row">
+				<input type="submit" class="submit" value="登录">
+			</div>
+		</form>
 	</div>
 </body>
 </html>
