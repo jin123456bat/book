@@ -115,7 +115,8 @@ class data extends control
 	 */
 	function download()
 	{
-		$result = $this->model('article')->where('completed=?',array(0))->select();
+		//$result = $this->model('article')->where('completed=?',array(0))->select();
+		$result = $this->model('article')->where('id=?',array(1225))->select();
 		foreach ($result as $r)
 		{
 			echo "正在下载:《".$r['title']."》从：".$r['url'];

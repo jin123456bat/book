@@ -15,16 +15,41 @@ class user extends entity
 		return null;
 	}
 	
+	/**
+	 * 密码加密函数
+	 * @param unknown $data 密码明文
+	 * @param unknown $password 盐值  长度必须是64位  范围0-9a-zA-Z
+	 * @return string
+	 */
 	private function encrypt($data,$password)
 	{
-		return openssl_encrypt($data, 'aes-256-cbc-hmac-sha256', $password);
+		$result = crypt($data,'$2y$01$'.$password.'$');
+		return $result;
 	}
 	
+	function __rules()
+	{
+		return array(
+			'required' => array(
+				'name' => array(
+					'message' => '请填写用户名',
+				),
+				'password' => array(
+					'message' => '请填写密码',
+				),
+			),
+		);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \framework\core\entity::__preInsert()
+	 */
 	function __preInsert()
 	{
 		if(isset($this->_data['password']) && !empty($this->_data['password']))
 		{
-			$this->_data['salt'] = encryption::random(32);
+			$this->_data['salt'] = encryption::random(64);
 			$this->_data['password'] = $this->encrypt($this->_data['password'], $this->_data['salt']);
 		}
 	}
@@ -33,7 +58,7 @@ class user extends entity
 	{
 		if(isset($this->_data['password']) && !empty($this->_data['password']))
 		{
-			$this->_data['salt'] = encryption::random(32);
+			$this->_data['salt'] = encryption::random(64);
 			$this->_data['password'] = $this->encrypt($this->_data['password'], $this->_data['salt']);
 		}
 	}

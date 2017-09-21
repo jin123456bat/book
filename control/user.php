@@ -42,7 +42,7 @@ class user extends control
 			}
 			else
 			{
-				return new message($user->getError());
+				return new message(current(current($user->getError())));
 			}
 		}
 		else
