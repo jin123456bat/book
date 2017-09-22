@@ -77,7 +77,8 @@ class data extends control
 	 */
 	function complete()
 	{
-		$books = $this->model('book')->where('completed=?',array(0))->select();
+		$books = $this->model('book')->where('completed=? and isdelete=?',array(0,0))->select();
+		//$books = $this->model('book')->where('id=?',[1])->select();
 		foreach ($books as $book)
 		{
 			$book = new book($book);
@@ -106,7 +107,8 @@ class data extends control
 	function __single()
 	{
 		return array(
-			'download'
+			'download',
+			'complete'
 		);
 	}
 	
@@ -115,8 +117,8 @@ class data extends control
 	 */
 	function download()
 	{
-		//$result = $this->model('article')->where('completed=?',array(0))->select();
-		$result = $this->model('article')->where('id=?',array(1225))->select();
+		$result = $this->model('article')->where('completed=?',array(0))->select();
+		//$result = $this->model('article')->where('id=?',array(1225))->select();
 		foreach ($result as $r)
 		{
 			echo "正在下载:《".$r['title']."》从：".$r['url'];

@@ -1,5 +1,5 @@
 <?php
-if ($_SERVER['HTTP_HOST'] == 'localhost')
+if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost')
 {
 	define('ROOT', '..');
 }

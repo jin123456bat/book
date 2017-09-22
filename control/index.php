@@ -70,8 +70,8 @@ class index extends webControl
 		$id = request::get('id',0,null,'i');
 		$article = $this->model('article')->where('id=?',array($id))->find();
 		
-		$article['prev_id'] = $this->model('article')->where('id<? and book_id=?',array($id,$article['book_id']))->order('createtime','desc')->order('id','desc')->scalar('id');
-		$article['next_id'] = $this->model('article')->where('id>? and book_id=?',array($id,$article['book_id']))->order('createtime','asc')->order('id','asc')->scalar('id');
+		$article['prev_id'] = $this->model('article')->where('id<? and book_id=? and completed=?',array($id,$article['book_id'],1))->order('createtime','desc')->order('id','desc')->scalar('id');
+		$article['next_id'] = $this->model('article')->where('id>? and book_id=? and completed=?',array($id,$article['book_id'],1))->order('createtime','asc')->order('id','asc')->scalar('id');
 		$article['content'] = trim($article['content']);
 		
 		$book = $this->model('book')->where('id=?',array($article['book_id']))->find();

@@ -117,7 +117,6 @@ class book extends entity
 			return array();
 		}
 		
-		$list = array_reverse($list);
 		$list = array_slice($list, $count);
 		return $list;
 	}
