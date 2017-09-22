@@ -97,8 +97,11 @@ class data extends control
 					));
 				}
 				$this->model('article')->commitCompress();
+				
+				$book->completed = $book->getIsCompleted()?1:0;
 			}
 		}
+		echo "同步完成";
 	}
 	
 	/**
@@ -117,13 +120,11 @@ class data extends control
 	 */
 	function download()
 	{
-		$result = $this->model('article')->where('completed=?',array(0))->select();
+		$result = $this->model('article')->where('completed=? and isdelete=?',array(0,0))->limit(100)->select();
 		//$result = $this->model('article')->where('id=?',array(1225))->select();
 		foreach ($result as $r)
 		{
-			echo "正在下载:《".$r['title']."》从：".$r['url'];
 			$response = http::get($r['url']);
-			echo "下载完成:《".$r['title']."》";
 			
 			if(preg_match('/<div id="content">(?<content>[\s\S]*)<\/div>/U', $response,$article))
 			{
@@ -140,17 +141,9 @@ class data extends control
 						'completed_time' => date('Y-m-d H:i:s'),
 					)))
 					{
-						echo "保存成功:《".$r['title']."》";
+						echo "下载完成:《".$r['title']."》";
 					}
 				}
-				else
-				{
-					echo "下载错误:《".$r['title']."》（".$r['id']."）";
-				}
-			}
-			else
-			{
-				echo "文章内容错误:《".$r['title']."》（".$r['id']."）";
 			}
 		}
 	}

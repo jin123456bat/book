@@ -109,8 +109,9 @@ class book extends entity
 	{
 		$list = $this->getArticleList();
 		
-		$count = $this->model('article')->where('book_id=?',array(
-			$this->_data['id']
+		$count = $this->model('article')->where('book_id=? and isdelete=?',array(
+			$this->_data['id'],
+			0
 		))->count();
 		if ($count == count($list))
 		{
