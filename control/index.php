@@ -87,9 +87,4 @@ class index extends webControl
 	{
 		return $this->list();
 	}
-	
-	function login()
-	{
-		
-	}
 }

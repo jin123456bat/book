@@ -71,6 +71,7 @@ body{
 				{%\framework\core\http::url('index','content',[id=>$article.prev_id])%}
 			{%/if%}
 			">上一章</a></div>
+			<div><a href="{%\framework\core\http::url()%}">首页</a></div>
 			<div><a href="{%\framework\core\http::url('index','article',[id=>$article.book_id])%}">目录</a></div>
 			<div><a href="
 			{%if empty($article.next_id)%}
@@ -91,6 +92,7 @@ body{
 				{%\framework\core\http::url('index','content',[id=>$article.prev_id])%}
 			{%/if%}
 			">上一章</a></div>
+			<div><a href="{%\framework\core\http::url()%}">首页</a></div>
 			<div><a href="{%\framework\core\http::url('index','article',[id=>$article.book_id])%}">目录</a></div>
 			<div><a href="
 			{%if empty($article.next_id)%}
