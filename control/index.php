@@ -1,14 +1,13 @@
 <?php
 namespace book\control;
 
-use framework\core\webControl;
 use framework\core\view;
 use framework\core\request;
 use framework\core\response\json;
 use framework\vendor\paginate;
-use framework\core\response\url;
+use book\extend\control;
 
-class index extends webControl
+class index extends control
 {
 	/**
 	 * 书籍列表

@@ -23,7 +23,7 @@ class user extends entity
 	 */
 	private function encrypt($data,$password)
 	{
-		$result = crypt($data,'$2y$01$'.$password.'$');
+		$result = crypt($data,'$2a$05$'.$password.'$');
 		return $result;
 	}
 	
@@ -38,6 +38,17 @@ class user extends entity
 					'message' => '请填写密码',
 				),
 			),
+			'eq' => array(
+				'password' => array(
+					'data' => '@repassword',
+					'message' => '两次输入的密码不一致',
+				)
+			),
+			'unique'=>array(
+				'name' => array(
+					'message' => '用户名已经注册',
+				)
+			)
 		);
 	}
 	

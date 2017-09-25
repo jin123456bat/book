@@ -1,13 +1,13 @@
 <?php
 namespace book\control;
-use framework\core\control;
+
 use framework\core\request;
 use framework\core\view;
 use framework\vendor\csrf;
 use framework\core\response\message;
 use framework\core\http;
 
-class user extends control
+class user extends \book\extend\control
 {
 	function login()
 	{

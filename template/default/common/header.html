@@ -9,7 +9,7 @@
 	color: #fff;
 	border: 1px solid #006B9F;
 	display:inline-block;
-	padding:5px;
+	padding:5px 10px;
 	border-radius: 5px;
 	margin-left:10px;
 	text-decoration: none;
@@ -19,8 +19,12 @@
 }
 </style>
 <div class="header">
+	{%if(!empty($user))%}
+	<a class="button">{%$user.name%}</a>
+	{%else%}
 	<a class="button" href="{%\framework\core\http::url('user','login')%}">登录</a>
 	<a class="button" href="{%\framework\core\http::url('user','register')%}">注册</a>
+	{%/if%}
 	
 	<a class="button" href="{%\framework\core\http::url('user','bookshelf')%}" style="float: right;">书架</a>
 	<a class="button" href="{%\framework\core\http::url()%}" style="float: right;">首页</a>
