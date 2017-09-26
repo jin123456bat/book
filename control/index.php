@@ -6,6 +6,8 @@ use framework\core\request;
 use framework\core\response\json;
 use framework\vendor\paginate;
 use book\extend\control;
+use book\entity\user;
+use framework\core\response\url;
 
 class index extends control
 {
@@ -15,12 +17,27 @@ class index extends control
 	 */
 	function list()
 	{
-		$book = $this->model('book')->where('isdelete=?',array(
+		$start = request::post('start',0,NULL,'i');
+		$length = request::post('length',100,NULL,'i');
+		
+		$book = $this->model('book')
+		->where('isdelete=?',array(
 			0
-		))->select();
-		$view = new view('book/list.html');
-		$view->assign('book', $book);
-		return $view;
+		));
+		
+		$page = new paginate($book);
+		$page->limit($start,$length);
+		
+		if (request::method() == 'post')
+		{
+			return new json(1,request::post('draw',1),$page->fetch());
+		}
+		else
+		{
+			$view = new view('book/list.html');
+			$view->assign('book', $page->fetch());
+			return $view;
+		}
 	}
 	
 	/**
@@ -30,7 +47,7 @@ class index extends control
 	{
 		$book_id = request::get('id',0,NULL,'i');
 		$start = request::post('start',0,NULL,'i');
-		$length = 20;
+		$length = request::post('length',20,NULL,'i');
 		$book = $this->model('book')->where('id=?',array($book_id))->find();
 		if (!empty($book))
 		{
@@ -82,8 +99,65 @@ class index extends control
 		return $view;
 	}
 	
+	/**
+	 * 书架
+	 * @return \framework\core\view
+	 */
+	function bookshelf()
+	{
+		
+		$start = request::post('start',0,NULL,'i');
+		$length = request::post('length',100,NULL,'i');
+		
+		$book = $this->model('book')
+		->where('isdelete=?',array(
+			0
+		))->where('id in (select bid from shelf where uid=?)',array(
+			user::getUserBySession()->id,
+		));
+		
+		$page = new paginate($book);
+		$page->limit($start,$length);
+		if (request::method() == 'post')
+		{
+			$data = $page->fetch();
+			foreach ($data as &$d)
+			{
+				$new = $this->model('article')->where('book_id=? and completed=?',array(
+					$d['id'],1
+				))->order('createtime','desc')->order('id','desc')->limit(1)->find('id,title');
+				$d['new'] = $new;
+			}
+			return new json(1,request::post('draw',1),$data);
+		}
+		else
+		{
+			$view = new view('book/shelf.html');
+			$view->assign('book', $page->fetch());
+			return $view;
+		}
+	}
+	
+	/**
+	 * 首页
+	 * @return \framework\core\view
+	 */
 	function index()
 	{
 		return $this->list();
+	}
+	
+	function __access()
+	{
+		return array(
+			array(
+				'deny',
+				'express' => empty(user::getUserBySession()),
+				'message' => new url('user','login'),
+				'actions' => array(
+					'bookshelf',
+				)
+			)
+		);
 	}
 }

@@ -22,6 +22,11 @@ body{
 .detail{
 	padding-left: 10px;
 	font-size: 13px;
+	height: 100px;
+}
+.detail div{
+	height:20px;
+	line-height: 20px;
 }
 a{
 	text-decoration: none;
@@ -40,7 +45,8 @@ a{
 			<div class="title">{%$item.name%}</div>
 			<div class="author">{%$item.author%}</div>
 			<div class="status">{%$item.completed==1?'完结':'连载'%}</div>
-			<div class="description">{%mb_substr($item.description,0,50)%}</div>
+			<div class="last">上次阅读:{%$item.last%}</div>
+			<div class="new">最新章节:<a href="">{%$item.new.title%}</a></div>
 		</div>
 	</div>
 	</a>
