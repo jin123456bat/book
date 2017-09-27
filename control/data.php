@@ -128,15 +128,15 @@ class data extends control
 			
 			if(preg_match('/<div id="content">(?<content>[\s\S]*)<\/div>/U', $response,$article))
 			{
-				$article = $article['content'];
-				$article = iconv('gbk', 'utf-8', str_replace(array(
+				$article_content = $article['content'];
+				$content = iconv('gbk', 'utf-8//TRANSLIT', str_replace(array(
 					'&nbsp;',
 					' ',
-				), '', strip_tags($article)));
-				if (!empty($article))
+				), '', strip_tags($article_content)));
+				if (!empty($content))
 				{
 					if($this->model('article')->where('id=?',array($r['id']))->limit(1)->update(array(
-						'content' => $article,
+						'content' => $content,
 						'completed' => 1,
 						'completed_time' => date('Y-m-d H:i:s'),
 					)))
