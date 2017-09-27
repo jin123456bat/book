@@ -120,7 +120,7 @@ class data extends control
 	 */
 	function download()
 	{
-		$result = $this->model('article')->where('completed=? and isdelete=?',array(0,0))->limit(100)->select();
+		$result = $this->model('article')->where('completed=? and isdelete=?',array(0,0))->select();
 		//$result = $this->model('article')->where('id=?',array(1225))->select();
 		foreach ($result as $r)
 		{
