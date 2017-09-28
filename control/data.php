@@ -121,7 +121,7 @@ class data extends control
 	function download()
 	{
 		$result = $this->model('article')->where('completed=? and isdelete=?',array(0,0))->select();
-		//$result = $this->model('article')->where('id=?',array(1225))->select();
+		//$result = $this->model('article')->where('id=?',array(14594))->select();
 		foreach ($result as $r)
 		{
 			$response = http::get($r['url']);
@@ -129,10 +129,15 @@ class data extends control
 			if(preg_match('/<div id="content">(?<content>[\s\S]*)<\/div>/U', $response,$article))
 			{
 				$article_content = $article['content'];
-				$content = iconv('gbk', 'utf-8//TRANSLIT', str_replace(array(
+				//字符转码
+				$article_content = mb_convert_encoding($article_content, 'utf-8','gbk');
+				//去除html或者php代码
+				$article_content = strip_tags($article_content);
+				//去除空格乱七八糟的
+				$content = str_replace(array(
 					'&nbsp;',
 					' ',
-				), '', strip_tags($article_content)));
+				), '', $article_content);
 				if (!empty($content))
 				{
 					if($this->model('article')->where('id=?',array($r['id']))->limit(1)->update(array(
