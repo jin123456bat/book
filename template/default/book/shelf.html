@@ -34,9 +34,7 @@ a{
 </style>
 <body>
 	{%import file='common/header.html'%}
-	
 	{%section from=$book value=item%}
-	<a href="{%\framework\core\http::url('index','article',[id=>$item.id])%}">
 	<div class="book">
 		<div class="image">
 			<image width="80px" height="100px" src="{%$item.image%}">
@@ -49,11 +47,7 @@ a{
 			<div class="new">最新章节:<a href="">{%$item.new.title%}</a></div>
 		</div>
 	</div>
-	</a>
 	{%/section%}
-	<script type="text/template">
-	
-	</script>
 	<script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="

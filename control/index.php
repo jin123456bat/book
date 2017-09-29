@@ -8,6 +8,8 @@ use framework\vendor\paginate;
 use book\extend\control;
 use book\entity\user;
 use framework\core\response\url;
+use framework\core\response\message;
+use framework\core\http;
 
 class index extends control
 {
@@ -51,6 +53,8 @@ class index extends control
 		$book = $this->model('book')->where('id=?',array($book_id))->find();
 		if (!empty($book))
 		{
+			
+			
 			$model = $this->model('article')
 			->where('book_id=? and completed=?',array($book_id,1))
 			->order('createtime','desc')
@@ -69,6 +73,7 @@ class index extends control
 			else
 			{
 				$view = new view('book/article.html');
+				$book['new'] = current($page->fetch());
 				$view->assign('book', $book);
 				$view->assign('pagesize', $page->pagesize($length));
 				$view->assign('article', $page->fetch());
@@ -99,13 +104,34 @@ class index extends control
 		return $view;
 	}
 	
+	function add_to_bookshelf()
+	{
+		$id = request::get('id');
+		
+		if(!empty($this->model('book')->where('id=?',array($id))->find()))
+		{
+			if($this->model('shelf')->insert(array(
+				'uid' => user::getUserBySession()->id,
+				'bid' => $id,
+				'createtime' => date('Y-m-d H:i:s'),
+			)))
+			{
+				return new message('添加成功',http::url('index','article',array('id'=>$id)));
+			}
+			else
+			{
+				return new message('添加失败',http::url('index','article',array('id'=>$id)));
+			}
+		}
+		return new message('参数错误',http::url('index','article',array('id'=>$id)));
+	}
+	
 	/**
 	 * 书架
 	 * @return \framework\core\view
 	 */
 	function bookshelf()
 	{
-		
 		$start = request::post('start',0,NULL,'i');
 		$length = request::post('length',100,NULL,'i');
 		
@@ -156,6 +182,7 @@ class index extends control
 				'message' => new url('user','login'),
 				'actions' => array(
 					'bookshelf',
+					'add_to_bookshelf'
 				)
 			)
 		);

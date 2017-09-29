@@ -48,13 +48,81 @@ a{
 	border:none;
 	outline:none;
 }
+.content .description{
+	font-size: 13px;
+    text-indent: 2em;
+    color: #666;
+    line-height: 25px;
+	padding:0px 10px;
+}
+.book{
+	display:block;
+	height:100px;
+	margin:5px;
+	background-color: #DEF;
+}
+.book .left{
+	display:inline-block;
+	float:left;
+}
+.book .right{
+	display:inline-block;
+	height:100%;
+	margin-left: 10px;
+}
+.book .right div{
+	height:25px;
+}
+.book .right .name{
+	color:blue; font-weight:bold
+}
+.operation{
+	display:flex;
+	flex-direction:row;
+	justify-content:space-around;
+	align-items:stretch;
+	flex-wrap: nowrap;
+	width: 100%;
+	margin: 5px 0px;
+}
+.operation .item{
+	flex:1 1 auto;
+	text-align:center;
+	color: white;
+	margin: 0px 5px;
+}
 </style>
 <body>
 	{%import file='common/header.html'%}
+	<div class="book">
+		<div class="left">
+			<div class="image">
+				<img src="{%$book.image%}" height="100px">
+			</div>
+		</div>
+		<div class="right">
+			<div class="name">{%$book.name%}</div>
+			<div class="author">作者:{%$book.author%}</div>
+			<div class="status">状态:{%$book.completed==1?'完结':'连载'%}</div>
+			<div class="new">最新:<a href="{%\framework\core\http::url(index,content,[id=>$book.new.id])%}">{%$book.new.title%}</a></div>
+		</div>
+	</div>
+	<div class="operation">
+		<a href="{%\framework\core\http::url(index,add_to_bookshelf,[id=>$book.id])%}" class="item" style="background-color: #F77720;">加入书架</a>
+		<a class="item" style="background-color: #4FC15F;">下载此书</a>
+	</div>
+	<div class="title">
+		本书简介
+	</div>
+	<div class="content">
+		<div class="description">
+		{%$book.description%}
+		</div>
+	</div>
 	<div class="title">
 		全部章节
 	</div>
-	<div class="content">
+	<div class="content" id="article_list">
 		{%section from=$article value=item%}
 		<div class="article"><a href="{%\framework\core\http::url('index','content',[id=>$item.id])%}">{%$item.title%}</a></div>
 		{%/section%}
@@ -80,9 +148,9 @@ a{
   		$.post('{%\framework\core\http::url('index','article',[id=>$_GET.id])%}',{start:start},function(response){
   			if(response.code==1)
 			{
-				$('.content').empty();
+				$('#article_list').empty();
 				$.each(response.data,function(index,value){
-					$('.content').append('<div class="article"><a href="{%\framework\core\http::url('index','content')%}&id='+value.id+'">'+value.title+'</a></div>');
+					$('#article_list').append('<div class="article"><a href="{%\framework\core\http::url('index','content')%}&id='+value.id+'">'+value.title+'</a></div>');
 				});
 			}
   		});
