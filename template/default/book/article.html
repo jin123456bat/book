@@ -56,19 +56,22 @@ a{
 	padding:0px 10px;
 }
 .book{
-	display:block;
-	height:100px;
+	display:inline-block;
 	margin:5px;
+	margin-bottom:0px;
 	background-color: #DEF;
 }
 .book .left{
 	display:inline-block;
 	float:left;
+	width: 24%;
 }
 .book .right{
 	display:inline-block;
-	height:100%;
 	margin-left: 10px;
+	width: 72%;
+	float:left;
+	overflow: hidden;
 }
 .book .right div{
 	height:25px;
@@ -83,7 +86,7 @@ a{
 	align-items:stretch;
 	flex-wrap: nowrap;
 	width: 100%;
-	margin: 5px 0px;
+	margin-bottom: 5px;
 }
 .operation .item{
 	flex:1 1 auto;
@@ -97,7 +100,7 @@ a{
 	<div class="book">
 		<div class="left">
 			<div class="image">
-				<img src="{%$book.image%}" height="100px">
+				<img src="{%$book.image%}" style="width:100%;">
 			</div>
 		</div>
 		<div class="right">
