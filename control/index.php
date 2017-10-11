@@ -67,17 +67,22 @@ class index extends control
 			
 			$page = new paginate($model);
 			$page->limit($start, $length);
+			$data = $page->fetch();
+			
 			if (request::isAjax() && request::method()=='post')
 			{
-				return new json(1,'ok',$page->fetch());
+				return new json(1,'ok',$data);
 			}
 			else
 			{
 				$view = new view('book/article.html');
-				$book['new'] = current($page->fetch());
+				if (!empty($data))
+				{
+					$book['new'] = current($data);
+				}
 				$view->assign('book', $book);
 				$view->assign('pagesize', $page->pagesize($length));
-				$view->assign('article', $page->fetch());
+				$view->assign('article', $data);
 				return $view;
 			}
 		}
