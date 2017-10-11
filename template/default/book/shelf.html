@@ -43,8 +43,8 @@ a{
 			<div class="title">{%$item.name%}</div>
 			<div class="author">{%$item.author%}</div>
 			<div class="status">{%$item.completed==1?'完结':'连载'%}</div>
-			<div class="last">上次阅读:{%$item.last%}</div>
-			<div class="new">最新章节:<a href="">{%$item.new.title%}</a></div>
+			<div class="last">上次阅读:<a href="{%\framework\core\http::url(index,content,[id=>$item.last.id])%}">{%$item.last.title%}</a></div>
+			<div class="new">最新章节:<a href="{%\framework\core\http::url(index,content,[id=>$item.new.id])%}">{%$item.new.title%}</a></div>
 		</div>
 	</div>
 	{%/section%}
@@ -52,43 +52,5 @@ a{
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
-	<script type="text/javascript">
-	var draw = 1,
-	start = 10,
-	length = 10,
-	load_pos = 0.3,//从什么位置开始滚动载入
-	isLoading = false;
-	
-	function loadSearchData(start_index,length,temp)
-	{
-		if (!isLoading) {
-			isLoading = true;
-			$.post('{%\framework\core\http::url('index','list')%}',{start:start_index,length:length,draw:temp},function(response){
-				if(response.code==1 && response.result == draw)
-				{
-					if (parseInt(response.data.length) > 0) {
-						for(var i=0;i<parseInt(response.data.length);i++)
-						{
-							var tpl = createTpl(response.data[i]);
-							$('body').append(tpl);
-						}
-						start += parseInt(response.data.length);
-						draw++;
-						isLoading = false;
-					}
-				}
-			});
-		}
-	}
-	/*$(window).scroll( function() {
-		var per = $(this).scrollTop() / $('body').height();
-		if(per > load_pos)
-		{
-			loadSearchData(start,length,draw);
-		}
-	});*/
-
-		
-	</script>
 </body>
 </html>

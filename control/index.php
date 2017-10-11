@@ -10,6 +10,7 @@ use book\entity\user;
 use framework\core\response\url;
 use framework\core\response\message;
 use framework\core\http;
+use framework\core\model;
 
 class index extends control
 {
@@ -101,6 +102,16 @@ class index extends control
 		$view->assign('article', $article);
 		$view->assign('book', $book);
 		
+		$user = user::getUserBySession();
+		if (!empty($user))
+		{
+			$this->model('history')->insert(array(
+				'bid' => $article['book_id'],
+				'aid' => $id,
+				'uid' => $user->id,
+			));
+		}
+		
 		return $view;
 	}
 	
@@ -144,22 +155,36 @@ class index extends control
 		
 		$page = new paginate($book);
 		$page->limit($start,$length);
+		
+		$data = $page->fetch();
+		
+		foreach ($data as &$d)
+		{
+			$new = $this->model('article')->where('book_id=? and completed=?',array(
+				$d['id'],1
+			))->order('createtime','desc')->order('id','desc')->limit(1)->find('id,title');
+			$d['new'] = $new;
+			
+			$last = $this->model('history')->where('bid=? and uid=?',array(
+				$d['id'],
+				user::getUserBySession()->id
+			))->leftJoin('article','article.id=history.aid')->order('time','desc')->limit(1)->find(array(
+				'article.id',
+				'article.title',
+			));
+			$d['last'] = $last;
+		}
+		
 		if (request::method() == 'post')
 		{
-			$data = $page->fetch();
-			foreach ($data as &$d)
-			{
-				$new = $this->model('article')->where('book_id=? and completed=?',array(
-					$d['id'],1
-				))->order('createtime','desc')->order('id','desc')->limit(1)->find('id,title');
-				$d['new'] = $new;
-			}
+			
+			
 			return new json(1,request::post('draw',1),$data);
 		}
 		else
 		{
 			$view = new view('book/shelf.html');
-			$view->assign('book', $page->fetch());
+			$view->assign('book', $data);
 			return $view;
 		}
 	}
