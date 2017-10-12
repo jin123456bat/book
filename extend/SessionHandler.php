@@ -1,5 +1,5 @@
 <?php
-namespace application\extend;
+namespace book\extend;
 
 use framework\core\base;
 use framework\core\model;
