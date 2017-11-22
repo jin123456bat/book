@@ -78,6 +78,26 @@ class data extends control
 	 */
 	function complete()
 	{
+	}
+
+	/**
+	 *
+	 * @return string[]
+	 */
+	function __single()
+	{
+		return array(
+			'download',
+			'complete'
+		);
+	}
+
+	/**
+	 * 文章下载
+	 */
+	function download()
+	{
+		// 同步目录
 		$books = $this->model('book')
 			->where('completed=? and isdelete=?', array(
 			0,
@@ -107,43 +127,24 @@ class data extends control
 				$book->completed = $book->getIsCompleted() ? 1 : 0;
 			}
 		}
-		echo "同步完成";
-	}
-
-	/**
-	 *
-	 * @return string[]
-	 */
-	function __single()
-	{
-		return array(
-			'download',
-			'complete'
-		);
-	}
-
-	/**
-	 * 文章下载
-	 */
-	function download()
-	{
+		
+		// 同步文章内容
+		
 		$result = $this->model('article')
 			->where('completed=? and isdelete=?', array(
 			0,
 			0
 		))
 			->select();
-		/*
-		 * $result = $this->model('article')
-		 * ->where('id=?', array(
-		 * 18489
-		 * ))
-		 * ->select();
-		 */
+		// $result = $this->model('article')
+		// ->where('id=?', array(
+		// 20829
+		// ))
+		// ->select();
+		
 		foreach ($result as $r)
 		{
 			$response = http::get($r['url']);
-			
 			if (preg_match('/<div id="content">(?<content>[\s\S]*)<\/div>/U', $response, $article))
 			{
 				$article_content = $article['content'];
@@ -156,6 +157,7 @@ class data extends control
 					'&nbsp;',
 					' '
 				), '', $article_content);
+				
 				if (! empty($content))
 				{
 					if ($this->model('article')
