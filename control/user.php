@@ -6,18 +6,20 @@ use framework\core\view;
 use framework\vendor\csrf;
 use framework\core\response\message;
 use framework\core\http;
+use framework\core\control;
 
-class user extends \book\extend\control
+class user extends control
 {
+
 	function login()
 	{
 		if (request::method() == 'post')
 		{
 			$user = new \book\entity\user(request::post());
-			if($user->login())
+			if ($user->login())
 			{
 				$user->saveSession();
-				return new message('登录成功',http::url('index', 'index'));
+				return new message('登录成功', http::url('index', 'index'));
 			}
 			else
 			{
@@ -29,7 +31,7 @@ class user extends \book\extend\control
 			return new view('user/login.html');
 		}
 	}
-	
+
 	function register()
 	{
 		if (request::method() == 'post')
@@ -38,7 +40,7 @@ class user extends \book\extend\control
 			if ($user->validate())
 			{
 				$user->save();
-				return new message('注册成功',http::url('index', 'index'));
+				return new message('注册成功', http::url('index', 'index'));
 			}
 			else
 			{
@@ -50,24 +52,26 @@ class user extends \book\extend\control
 			return new view('user/register.html');
 		}
 	}
-	
+
 	/**
-	 * {@inheritDoc}
+	 *
+	 * {@inheritdoc}
+	 *
 	 * @see \framework\core\control::__access()
 	 */
 	function __access()
 	{
 		return array(
-			//一个开启csrf验证的例子
+			// 一个开启csrf验证的例子
 			array(
-				csrf::verify(request::post('token'))?'allow':'deny',
+				csrf::verify(request::post('token')) ? 'allow' : 'deny',
 				'actions' => array(
 					'login',
-					'register',
+					'register'
 				),
 				'message' => new message('请刷新重试'),
-				'express' => request::method() == 'post',
-			),
+				'express' => request::method() == 'post'
+			)
 		);
 	}
 }

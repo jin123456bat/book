@@ -5,12 +5,12 @@ use framework\core\view;
 use framework\core\request;
 use framework\core\response\json;
 use framework\vendor\paginate;
-use book\extend\control;
 use book\entity\user;
 use framework\core\response\url;
 use framework\core\response\message;
 use framework\core\http;
 use framework\core\model;
+use framework\core\control;
 
 class index extends control
 {
