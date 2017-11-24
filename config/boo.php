@@ -1,2 +1,6 @@
 <?php
-return array();
+return array(
+	'request' => array(
+		'parser' => 'json'
+	)
+);

@@ -98,13 +98,17 @@ class data extends control
 	function download()
 	{
 		// 同步目录
+		// $books = $this->model('book')
+		// ->where('completed=? and isdelete=?', array(
+		// 0,
+		// 0
+		// ))
+		// ->select();
 		$books = $this->model('book')
-			->where('completed=? and isdelete=?', array(
-			0,
-			0
-		))
+			->where('id=?', [
+			12
+		])
 			->select();
-		// $books = $this->model('book')->where('id=?',[1])->select();
 		foreach ($books as $book)
 		{
 			$book = new book($book);
