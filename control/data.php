@@ -6,6 +6,7 @@ use framework\core\http;
 use book\entity\book;
 use framework\core\request;
 use framework\core\response\url;
+use book\entity\www_booktxt_net;
 
 class data extends control
 {
@@ -30,7 +31,7 @@ class data extends control
 			'url' => $url,
 			'source' => $host
 		);
-		$book = new book($data);
+		$book = new www_booktxt_net($data);
 		
 		// 更新基础信息
 		$book->name = $book->getTitle();
@@ -111,7 +112,7 @@ class data extends control
 			->select();
 		foreach ($books as $book)
 		{
-			$book = new book($book);
+			$book = new www_booktxt_net($book);
 			$list = $book->getNewArticle();
 			if (! empty($list))
 			{

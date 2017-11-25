@@ -5,9 +5,8 @@ use framework\core\entity;
 use framework\core\http;
 use framework\vendor\image;
 
-class book extends entity
+class www_booktxt_net extends entity
 {
-
 	private $_content;
 
 	function __construct($data)
