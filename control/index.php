@@ -53,23 +53,17 @@ class index extends control
 		$book_id = request::get('id', 0, NULL, 'i');
 		$start = request::post('start', 0, NULL, 'i');
 		$length = request::post('length', 20, NULL, 'i');
-		$book = $this->model('book')
-			->where('id=?', array(
+		$book = $this->model('book')->where('id=?', array(
 			$book_id
-		))
-			->find();
+		))->find();
 		if (! empty($book))
 		{
 			
-			$model = $this->model('article')
-				->where('book_id=? and completed=? and isdelete=?', array(
+			$model = $this->model('article')->where('book_id=? and completed=? and isdelete=?', array(
 				$book_id,
 				1,
 				0
-			))
-				->order('createtime', 'desc')
-				->order('id', 'desc')
-				->select(array(
+			))->order('createtime', 'desc')->order('id', 'desc')->select(array(
 				'id',
 				'title'
 			));
@@ -104,39 +98,27 @@ class index extends control
 	function content()
 	{
 		$id = request::get('id', 0, null, 'i');
-		$article = $this->model('article')
-			->where('id=?', array(
+		$article = $this->model('article')->where('id=?', array(
 			$id
-		))
-			->find();
+		))->find();
 		
-		$article['prev_id'] = $this->model('article')
-			->where('id<? and book_id=? and completed=? and isdelete=?', array(
+		$article['prev_id'] = $this->model('article')->where('id<? and book_id=? and completed=? and isdelete=?', array(
 			$id,
 			$article['book_id'],
 			1,
 			0
-		))
-			->order('createtime', 'desc')
-			->order('id', 'desc')
-			->scalar('id');
-		$article['next_id'] = $this->model('article')
-			->where('id>? and book_id=? and completed=? and isdelete=?', array(
+		))->order('createtime', 'desc')->order('id', 'desc')->scalar('id');
+		$article['next_id'] = $this->model('article')->where('id>? and book_id=? and completed=? and isdelete=?', array(
 			$id,
 			$article['book_id'],
 			1,
 			0
-		))
-			->order('createtime', 'asc')
-			->order('id', 'asc')
-			->scalar('id');
+		))->order('createtime', 'asc')->order('id', 'asc')->scalar('id');
 		$article['content'] = trim($article['content']);
 		
-		$book = $this->model('book')
-			->where('id=?', array(
+		$book = $this->model('book')->where('id=?', array(
 			$article['book_id']
-		))
-			->find();
+		))->find();
 		
 		$view = new view('book/content.html');
 		$view->assign('article', $article);
@@ -145,10 +127,13 @@ class index extends control
 		$user = user::getUserBySession();
 		if (! empty($user))
 		{
-			$this->model('history')->insert(array(
+			$this->model('history')->duplicate(array(
+				'time'
+			))->insert(array(
 				'bid' => $article['book_id'],
 				'aid' => $id,
-				'uid' => $user->id
+				'uid' => $user->id,
+				'time' => date('Y-m-d H:i:s')
 			));
 		}
 		
@@ -159,11 +144,9 @@ class index extends control
 	{
 		$id = request::get('id');
 		
-		if (! empty($this->model('book')
-			->where('id=?', array(
+		if (! empty($this->model('book')->where('id=?', array(
 			$id
-		))
-			->find()))
+		))->find()))
 		{
 			if ($this->model('shelf')->insert(array(
 				'uid' => user::getUserBySession()->id,
@@ -197,11 +180,9 @@ class index extends control
 		$start = request::post('start', 0, NULL, 'i');
 		$length = request::post('length', 100, NULL, 'i');
 		
-		$book = $this->model('book')
-			->where('isdelete=?', array(
+		$book = $this->model('book')->where('isdelete=?', array(
 			0
-		))
-			->where('id in (select bid from shelf where uid=?)', array(
+		))->where('id in (select bid from shelf where uid=?)', array(
 			user::getUserBySession()->id
 		));
 		
@@ -212,26 +193,16 @@ class index extends control
 		
 		foreach ($data as &$d)
 		{
-			$new = $this->model('article')
-				->where('book_id=? and completed=?', array(
+			$new = $this->model('article')->where('book_id=? and completed=?', array(
 				$d['id'],
 				1
-			))
-				->order('createtime', 'desc')
-				->order('id', 'desc')
-				->limit(1)
-				->find('id,title');
+			))->order('createtime', 'desc')->order('id', 'desc')->limit(1)->find('id,title');
 			$d['new'] = $new;
 			
-			$last = $this->model('history')
-				->where('bid=? and uid=?', array(
+			$last = $this->model('history')->where('bid=? and uid=?', array(
 				$d['id'],
 				user::getUserBySession()->id
-			))
-				->leftJoin('article', 'article.id=history.aid')
-				->order('time', 'desc')
-				->limit(1)
-				->find(array(
+			))->leftJoin('article', 'article.id=history.aid')->order('time', 'desc')->limit(1)->find(array(
 				'article.id',
 				'article.title'
 			));

@@ -142,10 +142,6 @@ class data extends control
 		echo $i . '完成';
 	}
 
-	function refreshImg()
-	{
-	}
-
 	/**
 	 * 文章下载
 	 */
@@ -192,9 +188,14 @@ class data extends control
 					));
 				}
 				$this->model('article')->commitCompress();
-				
-				$book->completed = $book->getIsCompleted() ? 1 : 0;
 			}
+			
+			$book->completed = $book->getIsCompleted() ? 1 : 0;
+			if (empty($book->image))
+			{
+				$book->image = $book->getImage();
+			}
+			$book->save();
 		}
 		
 		// 同步文章内容
