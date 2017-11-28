@@ -6,7 +6,7 @@ use framework\core\http;
 use book\entity\book;
 use framework\core\request;
 use framework\core\response\url;
-use book\entity\www_booktxt_net;
+use framework\core\response\message;
 
 class data extends control
 {
@@ -19,19 +19,31 @@ class data extends control
 	{
 		$url = request::post('url');
 		$url = parse_url($url);
+		if (empty($url))
+		{
+			return new message('url解析失败', http::url('admin', 'index'));
+		}
 		
 		$query = isset($url['query']) && ! empty($url['query']) ? $url['query'] : '';
 		$path = isset($url['path']) && ! empty($url['path']) ? $url['path'] : '';
-		// 主机host
-		$host = $url['scheme'] . '://' . $url['host'];
+		$scheme = isset($url['scheme']) && ! empty($url['scheme']) ? $url['scheme'] : '';
+		$host = isset($url['host']) && ! empty($url['host']) ? $url['host'] : '';
+		
 		// 目录url
-		$url = $host . $path . $query;
+		$url = $scheme . '://' . $host . $path . $query;
 		
 		$data = array(
 			'url' => $url,
-			'source' => $host
+			'source' => $scheme . '://' . $host
 		);
-		$book = new www_booktxt_net($data);
+		
+		$classname = str_replace('.', '_', $host);
+		$namespace = '\\book\\entity\\' . $classname;
+		if (! class_exists($namespace, true))
+		{
+			return new message('没有找到对应的解析方式');
+		}
+		$book = new $namespace($data);
 		
 		// 更新基础信息
 		$book->name = $book->getTitle();
@@ -94,25 +106,77 @@ class data extends control
 	}
 
 	/**
+	 * 切换数据源
+	 */
+	function change()
+	{
+		$books = $this->model('book')
+			->where(array(
+			'completed' => 0,
+			'isdelete' => 0
+		))
+			->select();
+		$i = 0;
+		foreach ($books as $book)
+		{
+			$url = 'http://zhannei.baidu.com/cse/search?q=%s&click=1&s=5199337987683747968&nsid=';
+			$url = sprintf($url, $book['name']);
+			
+			$content = http::get($url);
+			
+			if (preg_match('/<a cpos="title" href="(?<url>[^"]*)"/', $content, $match))
+			{
+				if ($this->model('book')
+					->where(array(
+					'id' => $book['id']
+				))
+					->limit(1)
+					->update(array(
+					'url' => $match['url']
+				)))
+				{
+					$i ++;
+				}
+			}
+		}
+		echo $i . '完成';
+	}
+
+	function refreshImg()
+	{
+	}
+
+	/**
 	 * 文章下载
 	 */
 	function download()
 	{
 		// 同步目录
-		// $books = $this->model('book')
-		// ->where('completed=? and isdelete=?', array(
-		// 0,
-		// 0
-		// ))
-		// ->select();
 		$books = $this->model('book')
-			->where('id=?', [
-			12
-		])
+			->where('completed=? and isdelete=?', array(
+			0,
+			0
+		))
 			->select();
+		// 		$books = $this->model('book')
+		// 			->where('id=?', [
+		// 			27
+		// 		])
+		// 			->select();
 		foreach ($books as $book)
 		{
-			$book = new www_booktxt_net($book);
+			$url = $book['url'];
+			$url = parse_url($url);
+			
+			$classname = str_replace('.', '_', $url['host']);
+			$namespace = '\\book\\entity\\' . $classname;
+			if (! class_exists($namespace, true))
+			{
+				echo "无对应的解析方式";
+				continue;
+			}
+			
+			$book = new $namespace($book);
 			$list = $book->getNewArticle();
 			if (! empty($list))
 			{
@@ -134,54 +198,49 @@ class data extends control
 		}
 		
 		// 同步文章内容
-		
 		$result = $this->model('article')
 			->where('completed=? and isdelete=?', array(
 			0,
 			0
 		))
 			->select();
-		// $result = $this->model('article')
-		// ->where('id=?', array(
-		// 20829
-		// ))
-		// ->select();
-		
+		// 		$result = $this->model('article')
+		// 			->where('id=?', array(
+		// 			20841
+		// 		))
+		// 			->select();
 		foreach ($result as $r)
 		{
-			$response = http::get($r['url']);
-			if (preg_match('/<div id="content">(?<content>[\s\S]*)<\/div>/U', $response, $article))
+			$url = parse_url($r['url']);
+			
+			$classname = str_replace('.', '_', $url['host']);
+			$namespace = '\\book\\entity\\' . $classname;
+			if (! class_exists($namespace, true))
 			{
-				$article_content = $article['content'];
-				// 字符转码
-				$article_content = mb_convert_encoding($article_content, 'utf-8', 'gbk');
-				// 去除html或者php代码
-				$article_content = strip_tags($article_content);
-				// 去除空格乱七八糟的
-				$content = str_replace(array(
-					'&nbsp;',
-					' '
-				), '', $article_content);
-				
-				if (! empty($content))
+				echo "无对应的解析方式";
+				continue;
+			}
+			
+			$content = call_user_func($namespace . '::getArticleContent', $r['url']);
+			
+			if (! empty($content))
+			{
+				if ($this->model('article')
+					->where('id=?', array(
+					$r['id']
+				))
+					->limit(1)
+					->update(array(
+					'content' => $content,
+					'completed' => 1,
+					'completed_time' => date('Y-m-d H:i:s')
+				)))
 				{
-					if ($this->model('article')
-						->where('id=?', array(
-						$r['id']
-					))
-						->limit(1)
-						->update(array(
-						'content' => $content,
-						'completed' => 1,
-						'completed_time' => date('Y-m-d H:i:s')
-					)))
-					{
-						echo "下载完成:《" . $r['title'] . "》";
-					}
-					else
-					{
-						echo "更新失败";
-					}
+					echo "下载完成:《" . $r['title'] . "》";
+				}
+				else
+				{
+					echo "更新失败";
 				}
 			}
 		}

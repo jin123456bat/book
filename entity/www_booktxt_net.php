@@ -7,7 +7,8 @@ use framework\vendor\image;
 
 class www_booktxt_net extends entity
 {
-	private $_content;
+
+	protected $_content;
 
 	function __construct($data)
 	{
@@ -19,6 +20,11 @@ class www_booktxt_net extends entity
 			$this->_content = str_replace('&nbsp;', '', $this->_content);
 			$this->_content = mb_convert_encoding($this->_content, 'utf-8', 'gbk');
 		}
+	}
+
+	function __model()
+	{
+		return 'book';
 	}
 
 	function __rules()
@@ -36,8 +42,10 @@ class www_booktxt_net extends entity
 	 */
 	function getTitle()
 	{
-		preg_match('/<h1>(?<title>.*)<\/h1>/', $this->_content, $match);
-		return $match['title'];
+		if (preg_match('/<h1>(?<title>.*)<\/h1>/', $this->_content, $match))
+		{
+			return $match['title'];
+		}
 	}
 
 	/**
@@ -46,8 +54,10 @@ class www_booktxt_net extends entity
 	 */
 	function getAuthor()
 	{
-		preg_match('/<p>作\S*者：(?<author>.+)<\/p>/', $this->_content, $match);
-		return $match['author'];
+		if (preg_match('/<p>作\S*者：(?<author>.+)<\/p>/', $this->_content, $match))
+		{
+			return $match['author'];
+		}
 	}
 
 	/**
@@ -55,8 +65,10 @@ class www_booktxt_net extends entity
 	 */
 	function getDescription()
 	{
-		preg_match('/<div id="intro">[\s]*<p>(?<description>[\s\S]*)<\/p>[\s]*<\/div>/im', $this->_content, $match);
-		return $match['description'];
+		if (preg_match('/<div id="intro">[\s]*<p>(?<description>[\s\S]*)<\/p>[\s]*<\/div>/im', $this->_content, $match))
+		{
+			return $match['description'];
+		}
 	}
 
 	/**
@@ -65,8 +77,10 @@ class www_booktxt_net extends entity
 	 */
 	function getIsCompleted()
 	{
-		preg_match('/<span class="(?<completed>[a-z])"><\/span>/', $this->_content, $match);
-		return $match['completed'] == 'a';
+		if (preg_match('/<span class="(?<completed>[a-z])"><\/span>/', $this->_content, $match))
+		{
+			return $match['completed'] == 'a';
+		}
 	}
 
 	/**
@@ -111,7 +125,6 @@ class www_booktxt_net extends entity
 	function getNewArticle()
 	{
 		$list = $this->getArticleList();
-		
 		$count = $this->model('article')
 			->where('book_id=? and isdelete=?', array(
 			$this->_data['id'],
@@ -125,5 +138,29 @@ class www_booktxt_net extends entity
 		
 		$list = array_slice($list, $count);
 		return $list;
+	}
+
+	/**
+	 * 获取文章内容
+	 * @param unknown $url
+	 * @return mixed
+	 */
+	static function getArticleContent($url)
+	{
+		$response = http::get($url);
+		if (preg_match('/<div id="content">(?<content>[\s\S]*)<\/div>/U', $response, $article))
+		{
+			$article_content = $article['content'];
+			// 字符转码
+			$article_content = mb_convert_encoding($article_content, 'utf-8', 'gbk');
+			// 去除html或者php代码
+			$article_content = strip_tags($article_content);
+			// 去除空格乱七八糟的
+			$content = str_replace(array(
+				'&nbsp;',
+				' '
+			), '', $article_content);
+			return $content;
+		}
 	}
 }

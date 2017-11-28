@@ -18,6 +18,7 @@ class index extends control
 
 	/**
 	 * 书籍列表
+	 *
 	 * @return \framework\core\view
 	 */
 	function list()
@@ -61,9 +62,10 @@ class index extends control
 		{
 			
 			$model = $this->model('article')
-				->where('book_id=? and completed=?', array(
+				->where('book_id=? and completed=? and isdelete=?', array(
 				$book_id,
-				1
+				1,
+				0
 			))
 				->order('createtime', 'desc')
 				->order('id', 'desc')
@@ -187,6 +189,7 @@ class index extends control
 
 	/**
 	 * 书架
+	 *
 	 * @return \framework\core\view
 	 */
 	function bookshelf()
@@ -250,6 +253,7 @@ class index extends control
 
 	/**
 	 * 首页
+	 *
 	 * @return \framework\core\view
 	 */
 	function index()
