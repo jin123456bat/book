@@ -80,7 +80,7 @@ class www_xxbiquge_com extends www_booktxt_net
 
 	function getArticleList()
 	{
-		if (preg_match_all('/<dd><a href="(?<url>[^"]*)">(?<name>[^<]*)<\/a><\/dd>/', $this->_content, $match))
+		if (preg_match_all('/<dd><a href="(?<url>[^"]*)"( class="empty")?>(?<name>[^<]*)<\/a><\/dd>/', $this->_content, $match))
 		{
 			$temp = array();
 			foreach ($match['url'] as $index => $url)
@@ -124,7 +124,8 @@ class www_xxbiquge_com extends www_booktxt_net
 				break;
 			}
 		}
-		return $temp;
+		$temp = array_reverse($temp);
+		return array();
 	}
 
 	/**
