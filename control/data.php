@@ -110,12 +110,10 @@ class data extends control
 	 */
 	function change()
 	{
-		$books = $this->model('book')
-			->where(array(
+		$books = $this->model('book')->where(array(
 			'completed' => 0,
 			'isdelete' => 0
-		))
-			->select();
+		))->select();
 		$i = 0;
 		foreach ($books as $book)
 		{
@@ -126,12 +124,9 @@ class data extends control
 			
 			if (preg_match('/<a cpos="title" href="(?<url>[^"]*)"/', $content, $match))
 			{
-				if ($this->model('book')
-					->where(array(
+				if ($this->model('book')->where(array(
 					'id' => $book['id']
-				))
-					->limit(1)
-					->update(array(
+				))->limit(1)->update(array(
 					'url' => $match['url']
 				)))
 				{
@@ -148,12 +143,10 @@ class data extends control
 	function download()
 	{
 		// 同步目录
-		$books = $this->model('book')
-			->where('completed=? and isdelete=?', array(
+		$books = $this->model('book')->where('completed=? and isdelete=?', array(
 			0,
 			0
-		))
-			->select();
+		))->select();
 		// 		$books = $this->model('book')
 		// 			->where('id=?', [
 		// 			27
@@ -199,12 +192,10 @@ class data extends control
 		}
 		
 		// 同步文章内容
-		$result = $this->model('article')
-			->where('completed=? and isdelete=?', array(
+		$result = $this->model('article')->where('completed=? and isdelete=?', array(
 			0,
 			0
-		))
-			->select();
+		))->select();
 		// 		$result = $this->model('article')
 		// 			->where('id=?', array(
 		// 			20841
@@ -226,12 +217,9 @@ class data extends control
 			
 			if (! empty($content))
 			{
-				if ($this->model('article')
-					->where('id=?', array(
+				if ($this->model('article')->where('id=?', array(
 					$r['id']
-				))
-					->limit(1)
-					->update(array(
+				))->limit(1)->update(array(
 					'content' => $content,
 					'completed' => 1,
 					'completed_time' => date('Y-m-d H:i:s')

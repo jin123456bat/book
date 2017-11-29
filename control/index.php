@@ -127,12 +127,11 @@ class index extends control
 		if (! empty($user))
 		{
 			$this->model('history')->duplicate(array(
-				'time'
+				'time' => date('Y-m-d H:i:s')
 			))->insert(array(
 				'bid' => $article['book_id'],
 				'aid' => $id,
-				'uid' => $user->id,
-				'time' => date('Y-m-d H:i:s')
+				'uid' => $user->id
 			));
 		}
 		

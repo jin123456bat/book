@@ -124,8 +124,7 @@ class www_xxbiquge_com extends www_booktxt_net
 				break;
 			}
 		}
-		$temp = array_reverse($temp);
-		return array();
+		return $temp;
 	}
 
 	/**
