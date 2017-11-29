@@ -74,9 +74,7 @@ class www_xxbiquge_com extends www_booktxt_net
 		if (preg_match('/<div id="fmimg"><img alt="[^"]*" src="(?<image>[^"]*)"/', $this->_content, $match))
 		{
 			$image = new image($match['image']);
-			return $image->move(APP_ROOT . '/upload/' . date('Y-m-d') . '/')
-				->rename(uniqid())
-				->path(false);
+			return $image->move(APP_ROOT . '/upload/' . date('Y-m-d') . '/')->rename(uniqid())->path(false);
 		}
 	}
 
@@ -109,22 +107,23 @@ class www_xxbiquge_com extends www_booktxt_net
 		
 		$name = array_column($list, 'name');
 		
-		$title = $this->model('article')
-			->where('book_id=? and isdelete=?', array(
+		$title = $this->model('article')->where('book_id=? and isdelete=?', array(
 			$this->_data['id'],
 			0
-		))
-			->column('title');
+		))->column('title');
 		
 		$temp = array();
-		foreach ($list as $l)
+		for ($i = count($list) - 1; $i >= 0; $i --)
 		{
-			if (! in_array($l['name'], $title))
+			if (! in_array($list[$i]['name'], $title, true))
 			{
-				$temp[] = $l;
+				$temp[] = $list[$i];
+			}
+			else
+			{
+				break;
 			}
 		}
-		
 		return $temp;
 	}
 
