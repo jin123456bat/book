@@ -100,8 +100,7 @@ class data extends control
 	function __single()
 	{
 		return array(
-			'download',
-			'complete'
+			'download'
 		);
 	}
 
