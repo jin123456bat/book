@@ -37,6 +37,16 @@ class www_booktxt_net extends entity
 		);
 	}
 
+	function __render($data)
+	{
+		return array(
+			'name' => 'trim|htmlspecialchars',
+			'description' => 'trim|htmlspecialchars',
+			'author' => 'trim|htmlspecialchars',
+			'image' => 'trim|htmlspecialchars'
+		);
+	}
+
 	/**
 	 * 获取文章标题
 	 */
@@ -50,6 +60,7 @@ class www_booktxt_net extends entity
 
 	/**
 	 * 获取文章作者
+	 *
 	 * @return unknown
 	 */
 	function getAuthor()
@@ -73,6 +84,7 @@ class www_booktxt_net extends entity
 
 	/**
 	 * 书籍是否完结
+	 *
 	 * @return boolean
 	 */
 	function getIsCompleted()
@@ -85,6 +97,7 @@ class www_booktxt_net extends entity
 
 	/**
 	 * 获取封面图
+	 *
 	 * @return mixed
 	 */
 	function getImage()
@@ -94,9 +107,7 @@ class www_booktxt_net extends entity
 		preg_match('/src=\'(?<image>[^\']+)\'/', $response, $image);
 		
 		$image = new image($image['image']);
-		return $image->move(APP_ROOT . '/upload/' . date('Y-m-d') . '/')
-			->rename(uniqid())
-			->path(false);
+		return $image->move(APP_ROOT . '/upload/' . date('Y-m-d') . '/')->rename(uniqid())->path(false);
 	}
 
 	/**
@@ -125,12 +136,10 @@ class www_booktxt_net extends entity
 	function getNewArticle()
 	{
 		$list = $this->getArticleList();
-		$count = $this->model('article')
-			->where('book_id=? and isdelete=?', array(
+		$count = $this->model('article')->where('book_id=? and isdelete=?', array(
 			$this->_data['id'],
 			0
-		))
-			->count();
+		))->count();
 		if ($count == count($list))
 		{
 			return array();
@@ -142,6 +151,7 @@ class www_booktxt_net extends entity
 
 	/**
 	 * 获取文章内容
+	 *
 	 * @param unknown $url
 	 * @return mixed
 	 */
