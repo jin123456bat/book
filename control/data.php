@@ -214,7 +214,7 @@ class data extends control
 			
 			$content = call_user_func($namespace . '::getArticleContent', $r['url']);
 			
-			if (! empty($content))
+			if (! empty($content) && mb_strlen($content, 'utf-8') >= 500)
 			{
 				if ($this->model('article')->where('id=?', array(
 					$r['id']
