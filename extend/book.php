@@ -6,15 +6,16 @@ use framework\core\view;
 
 class book extends \framework\core\application
 {
-	function onRequestEnd($response = null)
+
+	function onRequestEnd($control, $action, $response = null)
 	{
 		if ($response instanceof view)
 		{
 			$user = user::getUserBySession();
-			if (!empty($user))
+			if (! empty($user))
 			{
 				$response->assign('user', array(
-					'name' => $user->name,
+					'name' => $user->name
 				));
 				return $response;
 			}
