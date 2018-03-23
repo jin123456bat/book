@@ -17,7 +17,7 @@ class data extends control
 	 */
 	function create()
 	{
-		$url = request::post('url');
+		$url = request::post('url', '', 's');
 		$url = parse_url($url);
 		if (empty($url))
 		{

@@ -64,7 +64,7 @@ class user extends control
 		return array(
 			// 一个开启csrf验证的例子
 			array(
-				csrf::verify(request::post('token')) ? 'allow' : 'deny',
+				csrf::verify(request::post('token', '', 's')) ? 'allow' : 'deny',
 				'actions' => array(
 					'login',
 					'register'

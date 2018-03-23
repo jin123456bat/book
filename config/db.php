@@ -1,7 +1,7 @@
 <?php
-use framework\core\request;
+use framework\core\env;
 
-if (request::php_sapi_name() == 'cli' || $_SERVER['HTTP_HOST'] == 'book.techer.top')
+if (env::php_sapi_name() == 'cli' || $_SERVER['HTTP_HOST'] == 'book.techer.top')
 {
 	return array(
 		'type' => 'mysql',

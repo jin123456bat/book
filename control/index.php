@@ -22,8 +22,8 @@ class index extends control
 	 */
 	function list()
 	{
-		$start = request::post('start', 0, NULL, 'i');
-		$length = request::post('length', 100, NULL, 'i');
+		$start = request::post('start', 0, 'i');
+		$length = request::post('length', 100, 'i');
 		
 		$book = $this->model('book')->where('isdelete=?', array(
 			0
@@ -49,9 +49,9 @@ class index extends control
 	 */
 	function article()
 	{
-		$book_id = request::get('id', 0, NULL, 'i');
-		$start = request::post('start', 0, NULL, 'i');
-		$length = request::post('length', 20, NULL, 'i');
+		$book_id = request::get('id', 0, 'i');
+		$start = request::post('start', 0, 'i');
+		$length = request::post('length', 20, 'i');
 		$book = $this->model('book')->where('id=?', array(
 			$book_id
 		))->find();
@@ -96,7 +96,7 @@ class index extends control
 	 */
 	function content()
 	{
-		$id = request::get('id', 0, null, 'i');
+		$id = request::get('id', 0, 'i');
 		$article = $this->model('article')->where('id=?', array(
 			$id
 		))->find();
@@ -175,8 +175,8 @@ class index extends control
 	 */
 	function bookshelf()
 	{
-		$start = request::post('start', 0, NULL, 'i');
-		$length = request::post('length', 100, NULL, 'i');
+		$start = request::post('start', 0, 'i');
+		$length = request::post('length', 100, 'i');
 		
 		$book = $this->model('book')->where('isdelete=?', array(
 			0
