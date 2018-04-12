@@ -4,5 +4,5 @@ return array(
 	
 	'db' => array(
 		'model' => 'session'
-	)
+	),
 );
